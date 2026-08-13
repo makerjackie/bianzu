@@ -120,6 +120,7 @@ let snapTimer = 0;
 let introing = false;
 let introRaf = 0;
 const banks = {};
+let voice = null;
 
 function last() {
   return lastIndex(subject);
@@ -369,11 +370,17 @@ function loadBanks() {
 }
 
 function poke(id, volume = 1) {
+  const isVoice = id.includes("/");
+  if (isVoice && voice) {
+    voice.pause();
+    voice.currentTime = 0;
+  }
   let clip = banks[id];
   if (!clip) {
     clip = new Audio(`/sfx/${id}.mp3?v=5`);
     banks[id] = clip;
   }
+  if (isVoice) voice = clip;
   if (muted) return;
   clip.volume = volume;
   clip.currentTime = 0;
