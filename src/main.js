@@ -1,37 +1,27 @@
-const RANKS = [
-  { zh: "量子马", en: "Quantum", zhSub: "Quantum Musk", enSub: "量子马", src: "/ranks/01-quantum.webp" },
-  { zh: "牢马", en: "Jailed", zhSub: "Jailed Musk", enSub: "牢马", src: "/ranks/02-lao.webp" },
-  { zh: "马子", en: "Elon", zhSub: "Just Elon", enSub: "马子", src: "/ranks/03-zi.webp" },
-  { zh: "马圣", en: "Saint", zhSub: "Saint Musk", enSub: "马圣", src: "/ranks/04-saint.webp" },
-  { zh: "马神", en: "God", zhSub: "God Musk", enSub: "马神", src: "/ranks/05-god.webp" },
-  { zh: "马祖", en: "Ancestor", zhSub: "Ancestor Musk", enSub: "马祖", src: "/ranks/06-ancestor.webp" },
-];
+import { SUBJECTS, rankSrc } from "./subjects.js";
 
 const COPY = {
   zh: {
     titleHtml: '滑动变<span class="zu">祖</span>器',
-    kicker: "Musk Intensity Calibrator",
-    meter: "马系强度",
+    kicker: "Universal Intensity Calibrator",
     status: "当前状态",
     stage: (n) => `阶段 ${String(n).padStart(2, "0")} / 06`,
-    hint: "← 滑动以增强马系浓度 →",
     langBtn: "EN",
-    docTitle: "滑动变祖器 · Godelon",
+    docTitle: "滑动变祖器 · zu.01mvp.com",
   },
   en: {
-    titleHtml: "Godelon",
+    titleHtml: "Rheostat",
     kicker: "Sliding Ancestor Rheostat",
-    meter: "Musk Intensity",
     status: "Current state",
     stage: (n) => `Stage ${String(n).padStart(2, "0")} / 06`,
-    hint: "← slide to increase musk density →",
     langBtn: "中",
-    docTitle: "Godelon · Sliding Ancestor Rheostat",
+    docTitle: "Rheostat · Sliding Ancestor",
   },
 };
 
 const MAX_INTENSITY = 30;
-const LAST = RANKS.length - 1;
+const LAST = 5;
+const params = new URLSearchParams(location.search);
 
 const els = {
   html: document.documentElement,
@@ -46,6 +36,7 @@ const els = {
   hint: document.querySelector("#hint"),
   langBtn: document.querySelector("#lang-btn"),
   muteBtn: document.querySelector("#mute-btn"),
+  roster: document.querySelector("#roster"),
   faceA: document.querySelector("#face-a"),
   faceB: document.querySelector("#face-b"),
   thumbA: document.querySelector("#thumb-a"),
@@ -62,6 +53,7 @@ const els = {
 };
 
 let lang = detectLang();
+let subject = detectSubject();
 let muted = localStorage.getItem("bianzu-muted") === "1";
 let t = 0;
 let dragging = false;
@@ -72,12 +64,29 @@ let hum = null;
 const banks = {};
 
 function detectLang() {
+  if (params.get("lang") === "zh" || params.get("lang") === "en") return params.get("lang");
   const saved = localStorage.getItem("bianzu-lang");
   if (saved === "zh" || saved === "en") return saved;
   const host = location.hostname;
   if (host.startsWith("godelon")) return "en";
-  if (host.startsWith("bianzu")) return "zh";
+  if (host.startsWith("bianzu") || host.startsWith("zu.")) return "zh";
   return navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en";
+}
+
+function detectSubject() {
+  const id = params.get("who") || localStorage.getItem("bianzu-who");
+  return SUBJECTS.find((item) => item.id === id) || SUBJECTS[hostDefault()];
+}
+
+function hostDefault() {
+  const host = location.hostname;
+  if (host.startsWith("godelon")) return 0;
+  if (host.startsWith("bianzu")) return 1;
+  return 0;
+}
+
+function ranks() {
+  return subject.ranks;
 }
 
 function copy() {
@@ -89,21 +98,34 @@ function applyLang() {
   els.html.lang = lang === "zh" ? "zh-CN" : "en";
   els.title.innerHTML = c.titleHtml;
   els.kicker.textContent = c.kicker;
-  els.meterLabel.textContent = c.meter;
   els.statusLabel.textContent = c.status;
-  els.hint.textContent = c.hint;
   els.langBtn.textContent = c.langBtn;
   document.title = c.docTitle;
+  renderRoster();
   renderScale();
   setT(t);
 }
 
+function renderRoster() {
+  els.roster.innerHTML = SUBJECTS.map((item) => {
+    const src = rankSrc(item, item.ranks[2]);
+    const label = lang === "zh" ? item.zh : item.en;
+    const active = item.id === subject.id ? " is-active" : "";
+    return `<button type="button" class="who${active}" data-id="${item.id}" title="${label}">
+      <img src="${src}" alt="${label}" />
+      <span>${label}</span>
+    </button>`;
+  }).join("");
+  els.roster.querySelectorAll(".who").forEach((btn) => {
+    btn.addEventListener("click", () => setSubject(btn.dataset.id));
+  });
+}
+
 function renderScale() {
-  els.ticks.innerHTML = RANKS.map(() => "<i></i>").join("");
-  els.scale.innerHTML = RANKS.map(
-    (rank, i) =>
-      `<button type="button" class="tick" data-index="${i}">${rank[lang]}</button>`,
-  ).join("");
+  els.ticks.innerHTML = ranks().map(() => "<i></i>").join("");
+  els.scale.innerHTML = ranks()
+    .map((rank, i) => `<button type="button" class="tick" data-index="${i}">${rank[lang]}</button>`)
+    .join("");
   els.scale.querySelectorAll(".tick").forEach((btn) => {
     btn.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -111,6 +133,18 @@ function renderScale() {
       setT(Number(btn.dataset.index) / LAST, true);
     });
   });
+}
+
+function setSubject(id) {
+  const next = SUBJECTS.find((item) => item.id === id);
+  if (!next || next.id === subject.id) return;
+  subject = next;
+  localStorage.setItem("bianzu-who", subject.id);
+  lastRank = -1;
+  renderRoster();
+  renderScale();
+  preload();
+  setT(t, true);
 }
 
 function pair(value) {
@@ -143,19 +177,22 @@ function setT(next, snap = false) {
   const { lo, hi, frac } = pair(t);
   const nearest = Math.round(t * LAST);
   const intensity = String(Math.round(t * MAX_INTENSITY)).padStart(2, "0");
-  const rank = RANKS[nearest];
+  const list = ranks();
+  const rank = list[nearest];
 
-  els.faceA.src = RANKS[lo].src;
-  els.faceB.src = RANKS[hi].src;
+  els.faceA.src = rankSrc(subject, list[lo]);
+  els.faceB.src = rankSrc(subject, list[hi]);
   els.faceA.style.opacity = String(1 - frac);
   els.faceB.style.opacity = String(frac);
-  els.thumbA.src = RANKS[lo].src;
-  els.thumbB.src = RANKS[hi].src;
+  els.thumbA.src = rankSrc(subject, list[lo]);
+  els.thumbB.src = rankSrc(subject, list[hi]);
   els.thumbA.style.opacity = String(1 - frac);
   els.thumbB.style.opacity = String(frac);
   els.thumb.style.left = `${t * 100}%`;
   els.fill.style.width = `${t * 100}%`;
   els.intensity.textContent = intensity;
+  els.meterLabel.textContent = lang === "zh" ? subject.meterZh : subject.meterEn;
+  els.hint.textContent = lang === "zh" ? subject.hintZh : subject.hintEn;
   els.rankName.textContent = rank[lang];
   els.rankSub.textContent = lang === "zh" ? rank.zhSub : rank.enSub;
   els.rankStage.textContent = copy().stage(nearest + 1);
@@ -173,43 +210,43 @@ function setT(next, snap = false) {
 
   if (nearest !== lastRank) {
     const up = nearest > lastRank;
+    const changed = lastRank >= 0;
     lastRank = nearest;
-    bump(els.rankName, "pop");
-    bump(els.intensity, "pop");
-    bump(els.bezel, up ? "flash-up" : "flash-down");
-    bump(els.porthole, up ? "rise" : "shake");
-    spark(up);
-    if (navigator.vibrate) navigator.vibrate(up ? 18 : 28);
-    playRank(nearest, up);
+    if (changed) {
+      bump(els.rankName, "pop");
+      bump(els.intensity, "pop");
+      bump(els.bezel, up ? "flash-up" : "flash-down");
+      bump(els.porthole, up ? "rise" : "shake");
+      spark(up);
+      if (navigator.vibrate) navigator.vibrate(up ? 18 : 28);
+      playRank(nearest, up);
+    }
   }
 
   if (snap) t = nearest / LAST;
 }
 
 function preload() {
-  for (const rank of RANKS) {
+  for (const rank of ranks()) {
     const img = new Image();
-    img.src = rank.src;
+    img.src = rankSrc(subject, rank);
   }
 }
 
 function loadBanks() {
-  for (const key of ["click", "zap"]) {
-    banks[key] = new Audio(`/sfx/${key}.mp3`);
-    banks[key].preload = "auto";
-  }
-  for (const code of ["zh", "en"]) {
-    for (let i = 0; i < RANKS.length; i += 1) {
-      const id = `${code}-${i}`;
-      banks[id] = new Audio(`/sfx/${id}.mp3`);
-      banks[id].preload = "auto";
-    }
-  }
+  banks.click = new Audio("/sfx/click.mp3");
+  banks.zap = new Audio("/sfx/zap.mp3");
+  banks.click.preload = "auto";
+  banks.zap.preload = "auto";
 }
 
 function poke(id, volume = 1) {
-  const clip = banks[id];
-  if (!clip || muted) return;
+  let clip = banks[id];
+  if (!clip) {
+    clip = new Audio(`/sfx/${id}.mp3`);
+    banks[id] = clip;
+  }
+  if (muted) return;
   clip.volume = volume;
   clip.currentTime = 0;
   clip.play().catch(() => {});
@@ -217,7 +254,7 @@ function poke(id, volume = 1) {
 
 function playRank(index, up) {
   if (!audioReady || muted) return;
-  poke(`${lang}-${index}`);
+  poke(`${subject.id}/${lang}-${index}`);
   poke("click", 0.35);
   if (up && index >= 4) poke("zap", 0.45);
 }
@@ -267,7 +304,7 @@ function tFromClientX(clientX) {
 }
 
 function onPointerDown(event) {
-  if (event.target.closest(".tick")) return;
+  if (event.target.closest(".tick") || event.target.closest(".who")) return;
   dragging = true;
   els.thumb.classList.add("hot");
   unlockAudio();
@@ -291,6 +328,18 @@ function syncMute() {
   els.muteBtn.textContent = muted ? "✕" : "♪";
   els.muteBtn.classList.toggle("off", muted);
   if (muted) stopHum();
+}
+
+function runDemo() {
+  const start = performance.now();
+  const duration = 9000;
+  const tick = (now) => {
+    const p = Math.min(1, (now - start) / duration);
+    setT(p);
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  unlockAudio();
+  requestAnimationFrame(tick);
 }
 
 els.langBtn.addEventListener("click", () => {
@@ -327,3 +376,9 @@ window.addEventListener("keydown", (event) => {
     setT(t - 1 / LAST, true);
   }
 });
+
+if (params.get("demo") === "1") {
+  window.addEventListener("load", () => setTimeout(runDemo, 400));
+}
+
+window.__bianzu = { setT, setSubject, runDemo };
