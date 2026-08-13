@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>滑动变祖器 · Godelon</title>
+    <meta
+      name="description"
+      content="Slide Elon from Quantum Musk to Ancestor Musk. 滑动变祖器 / Godelon."
+    />
+    <meta property="og:title" content="滑动变祖器 · Godelon" />
+    <meta property="og:description" content="A sliding rheostat for Elon Musk." />
+    <meta property="og:image" content="/ranks/06-ancestor.webp" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Serif+SC:wght@500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="lab">
+      <header class="top">
+        <div>
+          <p class="kicker" id="kicker">Musk Intensity Calibrator</p>
+          <h1 id="title">滑动变<span class="zu">祖</span>器</h1>
+        </div>
+        <div class="top-right">
+          <div class="chrome">
+            <button type="button" class="chip" id="lang-btn" aria-label="Language">EN</button>
+            <button type="button" class="chip" id="mute-btn" aria-label="Sound">♪</button>
+          </div>
+          <div class="meter">
+            <span id="meter-label">马系强度</span>
+            <p><strong id="intensity">00</strong><em> / 30</em></p>
+          </div>
+        </div>
+      </header>
+
+      <section class="specimen" aria-live="polite">
+        <div class="bezel" id="bezel">
+          <div class="sparks" id="sparks"></div>
+          <div class="porthole" id="porthole">
+            <img id="face-a" alt="" />
+            <img id="face-b" alt="" />
+          </div>
+        </div>
+        <div class="rank-meta">
+          <span id="status-label">当前状态</span>
+          <h2 id="rank-name">量子马</h2>
+          <span id="rank-stage">阶段 01 / 06</span>
+        </div>
+        <p class="rank-en" id="rank-sub">Quantum Musk</p>
+      </section>
+
+      <section class="instrument" id="instrument">
+        <div class="wood">
+          <div class="posts">
+            <div class="post">
+              <span class="nut"></span>
+              <span class="nut"></span>
+            </div>
+            <div class="post">
+              <span class="nut"></span>
+              <span class="nut"></span>
+            </div>
+          </div>
+          <div class="cylinder" id="cylinder">
+            <div class="shine"></div>
+            <p class="printed">滑动变<span class="zu">祖</span>器</p>
+            <div class="ticks" id="ticks"></div>
+            <div class="rail">
+              <div class="fill" id="fill"></div>
+              <button type="button" class="thumb" id="thumb" aria-label="Drag slider">
+                <img id="thumb-a" alt="" />
+                <img id="thumb-b" alt="" />
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="scale" id="scale"></div>
+        <p class="hint" id="hint">← 滑动以增强马系浓度 →</p>
+      </section>
+
+      <footer>
+        <span>bianzu.01mvp.com</span>
+        <span>godelon.01mvp.com</span>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
