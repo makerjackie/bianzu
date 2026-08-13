@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>滑动变祖器 · Rheostat</title>
+    <title>滑动变祖器 · Sliding Ancestor Rheostat</title>
     <meta
       name="description"
-      content="滑动变祖器：给马斯克、梁文锋、Kimi、智谱、Codex、Claude 滑动封神。zu.01mvp.com"
+      content="滑动变祖器 / Sliding Ancestor Rheostat：给马斯克、梁文锋、杨植麟、奥特曼、达里奥滑动封神。zu.01mvp.com"
     />
-    <meta property="og:title" content="滑动变祖器 · Rheostat" />
-    <meta property="og:description" content="A sliding rheostat for Musk, Liang, Kimi, Zhipu, Codex and Claude." />
-    <meta property="og:image" content="/ranks/liang/06-ancestor.webp" />
+    <meta property="og:title" content="滑动变祖器 · Sliding Ancestor Rheostat" />
+    <meta property="og:description" content="A lab rheostat that turns CEOs into ancestors." />
+    <meta property="og:image" content="/ranks/liang/y-04-saint.webp" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,11 +21,21 @@
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div class="lab">
+    <div class="sky" id="sky" aria-hidden="true">
+      <div class="sky-wash"></div>
+      <div class="sky-bars"></div>
+      <div class="sky-rays"></div>
+      <div class="sky-storm"></div>
+      <div class="sky-palace"></div>
+    </div>
+    <div class="lab" id="lab">
       <header class="top">
-        <div>
-          <p class="kicker" id="kicker">Musk Intensity Calibrator</p>
-          <h1 id="title">滑动变<span class="zu">祖</span>器</h1>
+        <div class="brand">
+          <p class="kicker" id="kicker">变阻器 → 变祖器</p>
+          <h1 id="brand-title">
+            滑动变<span class="zu">祖</span>器
+          </h1>
+          <span class="en-title" id="brand-sub">Sliding Ancestor Rheostat</span>
         </div>
         <div class="top-right">
           <div class="chrome">
@@ -34,7 +44,7 @@
           </div>
           <div class="meter">
             <span id="meter-label">马系强度</span>
-            <p><strong id="intensity">00</strong><em> / 30</em></p>
+            <p><strong id="intensity">00</strong><em> Ω</em></p>
           </div>
         </div>
       </header>
@@ -42,59 +52,70 @@
       <nav class="roster" id="roster" aria-label="Characters"></nav>
 
       <section class="specimen" aria-live="polite">
-        <div class="bezel" id="bezel">
-          <div class="sparks" id="sparks"></div>
-          <div class="porthole" id="porthole">
-            <img id="face-a" alt="" />
-            <img id="face-b" alt="" />
+        <div class="bezel-slot">
+          <div class="bezel" id="bezel">
+            <div class="sparks" id="sparks"></div>
+            <div class="porthole" id="porthole">
+              <img id="face-a" alt="" />
+            </div>
+            <span class="finder tl" aria-hidden="true"></span>
+            <span class="finder tr" aria-hidden="true"></span>
+            <span class="finder bl" aria-hidden="true"></span>
+            <span class="finder br" aria-hidden="true"></span>
           </div>
         </div>
-        <div class="rank-meta">
-          <span id="status-label">当前状态</span>
-          <h2 id="rank-name">量子马</h2>
-          <span id="rank-stage">阶段 01 / 06</span>
+        <div class="rank-row">
+          <div class="rank-meta">
+            <span id="status-label">当前状态</span>
+            <h2 id="rank-name">马圣</h2>
+            <span id="rank-stage">档 04 / 06</span>
+          </div>
+          <div class="rank-foot">
+            <p class="rank-en" id="rank-sub">Saint Musk</p>
+            <p class="vibe" id="vibe">当前风评：马圣</p>
+          </div>
         </div>
-        <p class="rank-en" id="rank-sub">Quantum Musk</p>
       </section>
 
       <section class="instrument" id="instrument">
-        <div class="wood">
-          <div class="posts">
-            <div class="post">
-              <span class="nut"></span>
-              <span class="nut"></span>
-            </div>
-            <div class="post">
-              <span class="nut"></span>
-              <span class="nut"></span>
-            </div>
-          </div>
-          <div class="cylinder" id="cylinder">
-            <div class="shine"></div>
-            <p class="printed">滑动变<span class="zu">祖</span>器</p>
-            <div class="ticks" id="ticks"></div>
-            <div class="rail">
-              <div class="fill" id="fill"></div>
-              <button type="button" class="thumb" id="thumb" aria-label="Drag slider">
-                <img id="thumb-a" alt="" />
-                <img id="thumb-b" alt="" />
-              </button>
-            </div>
+        <div class="slider" id="slider">
+          <div class="rail" id="rail">
+            <div class="fill" id="fill"></div>
+            <div class="stops" id="ticks"></div>
+            <span class="now-mark" id="now-mark" title="当前风评"></span>
+            <button type="button" class="thumb" id="thumb" aria-label="Drag slider">
+              <img id="thumb-a" alt="" />
+            </button>
           </div>
         </div>
         <div class="scale" id="scale"></div>
         <p class="hint" id="hint">← 滑动以增强马系浓度 →</p>
       </section>
 
-      <footer>
-        <span>zu.01mvp.com</span>
-        <span>
-          <a href="/promo-zh.mp4">中文短视频</a>
-          ·
-          <a href="/promo-en.mp4">EN video</a>
-        </span>
-      </footer>
+      <button type="button" class="below-cue" id="below-cue">
+        <span id="cue-label">↓ 时间线</span>
+      </button>
     </div>
+
+    <section class="chronicle" id="chronicle">
+      <div class="chronicle-head">
+        <p class="kicker" id="tl-kicker">档案</p>
+        <h2 id="tl-title">时间线</h2>
+        <p id="tl-who"></p>
+      </div>
+      <div class="tl-cols" id="tl-cols">
+        <span>时间</span>
+        <span>风评</span>
+        <span>发生了什么</span>
+        <span>依据</span>
+      </div>
+      <div class="tl-body" id="tl-body"></div>
+    </section>
+
+    <footer>
+      <span class="credit" id="credit">Created by Grok 4.6 · <a href="https://github.com/makerjackie/bianzu">GitHub</a></span>
+      <span>zu.01mvp.com · rheostat.01mvp.com</span>
+    </footer>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

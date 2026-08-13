@@ -3,3 +3,12 @@ dist
 video
 .DS_Store
 .wrangler
+.env
+.env.*
+!.env.example
+refs
+public/ranks/**/ai-*.webp
+public/ranks/**/x-*.webp
+public/ranks/**/*-v3.webp
+public/ranks/zhipu/
+public/sfx/zhipu/

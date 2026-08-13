@@ -1,0 +1,110 @@
+{
+  "musk": {
+    "zh": [
+      "小马仔，星舰又即将。",
+      "牢马，账对不上。",
+      "马子。就是发帖的那个。",
+      "马圣！火箭香，回复脏。",
+      "马神！助推器又立住了。",
+      "马祖！宇宙跟你姓。"
+    ],
+    "en": [
+      "Kid Elon. Mars is still coming soon.",
+      "Jailed Elon. The savings don't add up.",
+      "Just Elon. He posts. That's the job.",
+      "Saint Elon. Tremendous rockets. Dirty replies.",
+      "God Elon. The boosters land. Believe me.",
+      "Ancestor Elon. The solar system takes his name."
+    ]
+  },
+  "liang": {
+    "zh": [
+      "花都谢了。V4 还在即将。",
+      "牢梁，你又跳票了。",
+      "梁子。Pro 不及预期。",
+      "梁圣！圣的是 Flash。",
+      "梁神！硅谷被砍一刀。",
+      "梁祖！开源认你当爹。"
+    ],
+    "en": [
+      "Delayed Liang. The flowers already wilted.",
+      "Jailed Liang. You delayed again.",
+      "Just Liang. Pro missed the hype.",
+      "Saint Liang. That's Flash, not Pro.",
+      "God Liang. Silicon Valley got cut.",
+      "Ancestor Liang. Open source takes his name."
+    ]
+  },
+  "kimi": {
+    "zh": [
+      "小难杨，下一 mil 还在排队。",
+      "牢杨，上下文窗口关了。",
+      "杨子。婴儿脸，公司要挂。",
+      "杨圣！只剩模型和月亮。",
+      "杨神！K3 把芯片股砍了。",
+      "杨祖！月之暗面认祖。"
+    ],
+    "en": [
+      "Delayed Yang. Next mil still in line.",
+      "Jailed Yang. Context window closed.",
+      "Just Yang. Babyface. Company might die.",
+      "Saint Yang. Model and moon. No ads.",
+      "Moon God. K3 ate the chip stocks.",
+      "Ancestor Yang. Dark side of the moon."
+    ]
+  },
+  "codex": {
+    "zh": [
+      "小难码，发布会日期又擦了。",
+      "牢码，董事会周五炒你。",
+      "码子。就是那个额头。",
+      "码圣！默认参照系，心虚圣。",
+      "码神！GPT 时刻那个人。",
+      "码祖！编译器认你当爹。"
+    ],
+    "en": [
+      "Delayed Sam. Keynote date got erased.",
+      "Jailed Sam. Board fired you Friday.",
+      "Just Sam. It's the forehead.",
+      "Saint Sam. Default model. Sweaty halo.",
+      "God Sam. The GPT moment guy.",
+      "Ancestor Sam. The compiler takes his name."
+    ]
+  },
+  "claude": {
+    "zh": [
+      "小难奥，礼貌先到模型后到。",
+      "牢奥，额度说没就没。",
+      "奥子。就是那个很有礼貌的人。",
+      "奥圣！写代码还是先开 Claude。",
+      "奥神！然后被出口管制掐了。",
+      "奥祖！请你先拒绝。"
+    ],
+    "en": [
+      "Delayed Dario. Polite first, model later.",
+      "Jailed Dario. Quotas vanished. Doge.",
+      "Just Dario. Very polite. That's the bit.",
+      "Saint Dario. Coders still open Claude first.",
+      "God Dario. Then an export control.",
+      "Ancestor Dario. Please refuse first."
+    ]
+  },
+  "tibo": {
+    "zh": [
+      "小难Tibo，pray for reset。",
+      "牢Tibo，只许按按钮不许睡。",
+      "Tibo子。黑帽衫，巨大按钮。",
+      "Tibo圣！信徒守夜祈祷。",
+      "Tibo神！Hi. It is done.",
+      "Tibo祖！额度和按钮跟你姓。"
+    ],
+    "en": [
+      "Delayed Tibo. Pray for reset.",
+      "Jailed Tibo. Button only. No sleep.",
+      "Just Tibo. Black hoodie. Giant button.",
+      "Saint Tibo. Believers kept vigil.",
+      "God Tibo. Hi. It is done.",
+      "Ancestor Tibo. Limits take his name."
+    ]
+  }
+}
