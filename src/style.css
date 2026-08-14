@@ -306,14 +306,15 @@ html[lang="en"] .tick {
   border: 1px solid transparent;
   background: transparent;
   color: var(--mute);
-  width: 72px;
+  width: 84px;
   flex: 0 0 auto;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  font: 700 12px/1.1 "IBM Plex Sans", sans-serif;
+  font: 700 10px/1.15 "IBM Plex Sans", sans-serif;
+  text-align: center;
   transition: color 0.2s ease, transform 0.22s var(--spring);
 }
 
@@ -1072,13 +1073,20 @@ body[data-rank="5"] .porthole {
     width: calc(100% - 12px);
   }
 
+  .roster {
+    gap: 4px;
+    padding: 8px 6px;
+    justify-content: flex-start;
+  }
+
   .who {
-    width: 64px;
+    width: 68px;
+    font-size: 9px;
   }
 
   .who img {
-    width: 52px;
-    height: 52px;
+    width: 46px;
+    height: 46px;
   }
 
   .tl-cols {

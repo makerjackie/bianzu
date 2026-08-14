@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>滑动变祖器</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --walnut: #1c140e;
+        --zu: #2f6dff;
+        --gold: #e8c56a;
+        --paper: #efe6d6;
+        --mute: rgba(239, 230, 214, 0.55);
+        --spring: cubic-bezier(0.22, 1.45, 0.32, 1);
+        --glow: #c9a45c;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { min-height: 100%; }
+      body {
+        color: var(--paper);
+        font-family: "IBM Plex Sans", "PingFang SC", sans-serif;
+        background: var(--scene, var(--walnut));
+      }
+      .sky { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--walnut); }
+      .sky-wash {
+        position: absolute; inset: 0;
+        background: radial-gradient(1200px 700px at 50% -10%, #4a321f 0%, transparent 55%), var(--walnut);
+        transition: background 0.55s ease;
+      }
+      body[data-rank="0"] { --glow: #7aa0c8; --scene: #121820; }
+      body[data-rank="0"] .sky-wash { background: radial-gradient(900px 500px at 50% -10%, #3a4a5a 0%, transparent 55%), #121820; }
+      body[data-rank="1"] { --glow: #c45a4a; --scene: #161018; }
+      body[data-rank="3"] { --glow: #e8c56a; --scene: #2a1c0c; }
+      body[data-rank="4"] { --glow: #8ab0ff; --scene: #140c22; }
+      body[data-rank="5"] { --glow: #ffd56a; --scene: #2a1208; }
+      .lab {
+        width: min(980px, calc(100% - 20px));
+        margin: 0 auto;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        padding: max(8px, env(safe-area-inset-top)) 0 8px;
+      }
+      .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+      .kicker { letter-spacing: 0.14em; font-size: 9px; color: var(--mute); margin-bottom: 2px; }
+      h1 { font-family: "Noto Serif SC", serif; font-size: clamp(22px, 4vw, 34px); font-weight: 900; }
+      html[lang="en"] h1 { font-family: "IBM Plex Sans", sans-serif; }
+      .zu { color: var(--zu); }
+      .en-title { display: block; margin-top: 2px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+      .chip {
+        appearance: none; border: 1px solid rgba(239, 230, 214, 0.25);
+        background: rgba(20, 15, 11, 0.35); color: var(--paper);
+        width: 32px; height: 24px; border-radius: 99px; cursor: pointer;
+        font: 600 11px/1 "IBM Plex Sans", sans-serif;
+      }
+      .meter { text-align: right; }
+      .meter span { display: block; font-size: 9px; color: var(--mute); letter-spacing: 0.12em; }
+      .meter p { font-variant-numeric: tabular-nums; font-size: clamp(18px, 3vw, 26px); }
+      .meter em { font-style: normal; font-size: 13px; color: var(--mute); }
+      .who-line { text-align: center; color: var(--gold); letter-spacing: 0.1em; font-size: 13px; margin: 4px 0 2px; }
+      .bezel-slot { flex: 1 1 auto; display: grid; place-items: center; min-height: 240px; }
+      .porthole {
+        width: min(92vw, 520px); aspect-ratio: 1;
+        border-radius: 4px; overflow: hidden; background: #c8c2b8;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.42), 0 0 0 2px color-mix(in srgb, var(--glow) 50%, transparent);
+      }
+      .porthole img { width: 100%; height: 100%; object-fit: contain; display: block; }
+      .rank-row { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+      .rank-meta { width: min(92vw, 520px); display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 8px; }
+      .rank-meta span { font-size: 10px; color: var(--mute); letter-spacing: 0.08em; }
+      .rank-meta span:last-child { text-align: right; }
+      #rank-name { font-family: "Noto Serif SC", serif; font-size: clamp(20px, 4.2vw, 32px); font-weight: 700; text-align: center; }
+      .rank-foot { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+      .rank-en { font-size: 12px; color: var(--gold); max-width: min(92vw, 520px); text-align: center; }
+      .vibe {
+        padding: 4px 12px; border-radius: 99px;
+        border: 1px solid rgba(232, 197, 106, 0.45);
+        background: rgba(232, 197, 106, 0.12); color: var(--gold);
+        font: 700 12px/1 "Noto Serif SC", serif;
+      }
+      .instrument { user-select: none; touch-action: none; padding: 6px 8px 0; }
+      .slider { height: 56px; display: grid; place-items: center; cursor: grab; }
+      .slider:active { cursor: grabbing; }
+      .rail { position: relative; width: 100%; height: 10px; border-radius: 99px; background: rgba(239, 230, 214, 0.14); }
+      .fill {
+        position: absolute; inset: 0; border-radius: 99px;
+        background: linear-gradient(90deg, #7aa0ff, var(--glow));
+        transform: scaleX(var(--t, 0)); transform-origin: left center; pointer-events: none;
+      }
+      .stops, .scale { display: grid; grid-template-columns: repeat(var(--n, 6), minmax(0, 1fr)); }
+      .stops { position: absolute; inset: 0; align-items: center; pointer-events: none; }
+      .stops i { width: 6px; height: 6px; border-radius: 50%; background: rgba(239, 230, 214, 0.35); justify-self: center; }
+      .stops i.is-active { background: #fff; }
+      .stops i.is-now { background: var(--gold); }
+      .now-mark {
+        position: absolute; top: 50%; left: var(--now, 0%);
+        width: 8px; height: 18px; transform: translate(-50%, -50%);
+        border-radius: 2px; background: var(--gold); pointer-events: none;
+      }
+      .thumb {
+        --x: 0%; position: absolute; top: 50%; left: var(--x);
+        width: 52px; height: 52px; border: 0; padding: 0; border-radius: 50%;
+        transform: translate(-50%, -50%); background: #1a140f;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35), 0 0 0 2px color-mix(in srgb, var(--glow) 70%, transparent);
+        cursor: grab; overflow: hidden; z-index: 4;
+      }
+      .thumb img { position: absolute; inset: 3px; width: calc(100% - 6px); height: calc(100% - 6px); border-radius: 50%; object-fit: cover; object-position: 50% 18%; }
+      .scale { margin-top: 10px; }
+      .tick {
+        appearance: none; border: 0; background: none; cursor: pointer; color: var(--paper);
+        font: 700 clamp(10px, 2.2vw, 14px)/1.2 "Noto Serif SC", serif;
+        display: flex; flex-direction: column; align-items: center; gap: 2px;
+      }
+      .tick em { font: 400 8px/1 "IBM Plex Sans", sans-serif; letter-spacing: 0.12em; color: var(--gold); }
+      .tick.is-active { color: #9db6ff; }
+      .tick.is-now { color: var(--gold); }
+      .hint { text-align: center; margin-top: 6px; color: var(--mute); letter-spacing: 0.12em; font-size: 11px; }
+      .below-cue {
+        appearance: none; border: 0; background: transparent; color: var(--mute);
+        cursor: pointer; font: 600 11px/1 "IBM Plex Sans", sans-serif; letter-spacing: 0.14em;
+        text-transform: uppercase; padding: 8px 0; align-self: center;
+      }
+      .chronicle { width: min(980px, calc(100% - 20px)); margin: 0 auto; padding: 28px 0 24px; }
+      .chronicle-head { text-align: center; margin-bottom: 16px; }
+      .chronicle-head h2 { font-family: "Noto Serif SC", serif; font-size: clamp(22px, 4vw, 32px); font-weight: 900; }
+      #tl-who { margin-top: 6px; color: var(--gold); font-size: 13px; letter-spacing: 0.08em; }
+      .tl-cols, .tl-row { display: grid; grid-template-columns: 7.2rem 6.4rem minmax(0, 1.15fr) minmax(0, 0.95fr); gap: 12px 16px; }
+      .tl-cols { padding: 0 14px 8px; color: var(--mute); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; border-bottom: 1px solid rgba(239, 230, 214, 0.14); }
+      .tl-row { padding: 12px 14px; border-bottom: 1px solid rgba(239, 230, 214, 0.08); }
+      .tl-row.is-now { background: rgba(232, 197, 106, 0.08); box-shadow: inset 3px 0 0 var(--gold); }
+      .tl-band { font-family: "Noto Serif SC", serif; font-weight: 700; }
+      .tl-now { display: block; font: 400 9px/1 "IBM Plex Sans", sans-serif; letter-spacing: 0.16em; color: var(--gold); }
+      .tl-why, .tl-src { font-size: 13px; line-height: 1.45; }
+      .tl-src { color: var(--mute); }
+      footer { width: min(980px, calc(100% - 20px)); margin: 0 auto 20px; display: flex; justify-content: space-between; gap: 12px; color: var(--mute); font-size: 11px; letter-spacing: 0.08em; }
+      footer a { color: var(--gold); }
+      @media (max-width: 720px) {
+        .tl-cols { display: none; }
+        .tl-row { grid-template-columns: auto 1fr; }
+        .tl-why, .tl-src { grid-column: 1 / -1; }
+      }
+    </style>
+  </head>
+  <body data-rank="0">
+    <div class="sky" aria-hidden="true"><div class="sky-wash"></div></div>
+    <div class="lab">
+      <header class="top">
+        <div>
+          <p class="kicker" id="kicker">变阻器 → 变祖器</p>
+          <h1 id="brand">滑动变<span class="zu">祖</span>器</h1>
+          <span class="en-title" id="brand-sub">Sliding Ancestor Rheostat</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <button type="button" class="chip" id="lang-btn">EN</button>
+          <div class="meter">
+            <span id="meter-label">强度</span>
+            <p><strong id="intensity">00</strong><em> Ω</em></p>
+          </div>
+        </div>
+      </header>
+      <p class="who-line" id="who-line"></p>
+      <div class="bezel-slot">
+        <div class="porthole"><img id="face" alt="" /></div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-meta">
+          <span id="status-label">当前状态</span>
+          <h2 id="rank-name"></h2>
+          <span id="rank-stage"></span>
+        </div>
+        <div class="rank-foot">
+          <p class="rank-en" id="rank-sub"></p>
+          <p class="vibe" id="vibe"></p>
+        </div>
+      </div>
+      <section class="instrument" id="instrument" style="--n:6">
+        <div class="slider" id="slider">
+          <div class="rail" id="rail">
+            <div class="fill" id="fill"></div>
+            <div class="stops" id="ticks"></div>
+            <span class="now-mark" id="now-mark"></span>
+            <button type="button" class="thumb" id="thumb"><img id="thumb-a" alt="" /></button>
+          </div>
+        </div>
+        <div class="scale" id="scale"></div>
+        <p class="hint" id="hint"></p>
+      </section>
+      <button type="button" class="below-cue" id="cue">↓ 时间线</button>
+    </div>
+    <section class="chronicle" id="chronicle">
+      <div class="chronicle-head">
+        <p class="kicker">档案</p>
+        <h2 id="tl-title">时间线</h2>
+        <p id="tl-who"></p>
+      </div>
+      <div class="tl-cols" id="tl-cols"><span>时间</span><span>风评</span><span>发生了什么</span><span>依据</span></div>
+      <div class="tl-body" id="tl-body"></div>
+    </section>
+    <footer>
+      <span>滑动变祖器 · <a href="https://github.com/makerjackie/bianzu">npx skills add makerjackie/bianzu</a></span>
+      <span>zu.01mvp.com</span>
+    </footer>
+    <script>
+      // Replace this object. Images live in ./ranks/{file}
+      const SUBJECT = {
+        zh: "MakerJackie",
+        en: "Jackie",
+        whoZh: "MakerJackie · 默默无闻的独立开发者",
+        whoEn: "MakerJackie · Nobody indie hacker",
+        meterZh: "Jackie强度",
+        meterEn: "Jackie Intensity",
+        hintZh: "← 滑动变祖 · App 越多祖气越浓 →",
+        hintEn: "← slide the rheostat · more apps, more ancestor →",
+        current: 0,
+        ranks: [
+          { zh: "小难Jackie", en: "Delayed Jackie", file: "00-nan.webp", eventZh: "做了三十个 App，MRR 还是 0。评论区发明了小难Jackie。", eventEn: "Thirty apps. Still $0 MRR. The comments invented Delayed Jackie." },
+          { zh: "牢Jackie", en: "Jailed Jackie", file: "02-lao.webp", eventZh: "Claude 账单和 Cloudflare 同一周催。房东也在群里@他。", eventEn: "Claude and Cloudflare billed the same week. Jail." },
+          { zh: "Jackie子", en: "Jackie", file: "03-zi.webp", eventZh: "就是那个默默无闻的独立开发者。收入还在「即将」。", eventEn: "Just Jackie. Revenue is still Coming Soon." },
+          { zh: "Jackie圣", en: "Saint Jackie", file: "04-saint.webp", eventZh: "有个小工具真的有人付费了。月入四位数。", eventEn: "One tiny tool actually got paid. Four-digit months." },
+          { zh: "Jackie神", en: "God Jackie", file: "05-god.webp", eventZh: "01MVP 出圈。年入七位数，还在说自己是独立开发者。", eventEn: "01MVP broke out. Seven-figure year. Still indie." },
+          { zh: "Jackie祖", en: "Ancestor Jackie", file: "06-ancestor.webp", eventZh: "公司卖掉了。从此独立开发者以 Jackie 为姓。", eventEn: "Sold the company. Indies take his name." },
+        ],
+        timeline: [
+          { date: "2022-03", rank: 2, whyZh: "辞职做独立开发。第一周上了三个 App。", whyEn: "Quit to go indie. Three apps in week one.", srcZh: "个人博客", srcEn: "the personal blog" },
+          { date: "2023-06", rank: 3, whyZh: "PH 第三。兴奋三天。收入 12 美元。", whyEn: "PH #3. Three days of joy. Twelve dollars.", srcZh: "Stripe $12", srcEn: "Stripe $12" },
+          { date: "2024-11", rank: 0, whyZh: "三十多个 App。总收入没跑赢 API 账单。", whyEn: "Thirty-plus apps. Lifetime revenue lost to the API bill.", srcZh: "云账单", srcEn: "the cloud invoice" },
+          { date: "2025-11", rank: 1, whyZh: "Claude、Cloudflare、域名同一周。房东@他。", whyEn: "Claude, Cloudflare, and the domain, same week.", srcZh: "催款邮件", srcEn: "dunning emails" },
+          { date: "2026-08", rank: 0, now: true, whyZh: "收入为 0。还在做第 31 个。当前风评：小难Jackie。", whyEn: "Income: $0. Shipping app 31. Delayed Jackie.", srcZh: "Stripe 全是零", srcEn: "Stripe of zeroes" },
+        ],
+      };
+
+      const COPY = {
+        zh: { status: "当前状态", lang: "EN", vibe: (n) => `当前风评是 ${n}`, now: "当前", cue: "↓ 时间线", title: "时间线", cols: ["时间", "风评", "发生了什么", "依据"], brand: '滑动变<span class="zu">祖</span>器', sub: "Sliding Ancestor Rheostat", kicker: "变阻器 → 变祖器" },
+        en: { status: "Current state", lang: "中", vibe: (n) => `Current vibe: ${n}`, now: "now", cue: "↓ Timeline", title: "Timeline", cols: ["When", "Vibe", "What happened", "Source"], brand: 'Sliding Ancestor <span class="zu">Rheostat</span>', sub: "滑动变祖器", kicker: "Rheostat → Ancestorstat" },
+      };
+
+      const last = SUBJECT.ranks.length - 1;
+      let lang = /zh/i.test(navigator.language) ? "zh" : "en";
+      let t = SUBJECT.current / last;
+      let dragging = false;
+
+      const $ = (id) => document.getElementById(id);
+      const loc = (zh, en) => (lang === "zh" ? zh : en);
+      const label = (r) => loc(r.zh, r.en);
+      const src = (r) => `./ranks/${r.file}`;
+      const units = () => last + 1;
+      const xFromT = (v) => ((v * last + 0.5) / units()) * 100;
+
+      function render() {
+        const c = COPY[lang];
+        document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+        document.title = `${loc(SUBJECT.zh, SUBJECT.en)} · ${c.sub}`;
+        $("kicker").textContent = c.kicker;
+        $("brand").innerHTML = c.brand;
+        $("brand-sub").textContent = c.sub;
+        $("lang-btn").textContent = c.lang;
+        $("status-label").textContent = c.status;
+        $("cue").textContent = c.cue;
+        $("tl-title").textContent = c.title;
+        $("tl-cols").innerHTML = c.cols.map((x) => `<span>${x}</span>`).join("");
+        $("who-line").textContent = loc(SUBJECT.whoZh, SUBJECT.whoEn);
+        $("tl-who").textContent = loc(SUBJECT.whoZh, SUBJECT.whoEn);
+        $("meter-label").textContent = loc(SUBJECT.meterZh, SUBJECT.meterEn);
+        $("hint").textContent = loc(SUBJECT.hintZh, SUBJECT.hintEn);
+        $("ticks").innerHTML = SUBJECT.ranks.map((_, i) => `<i class="${i === SUBJECT.current ? "is-now" : ""}"></i>`).join("");
+        $("scale").innerHTML = SUBJECT.ranks
+          .map((r, i) => `<button type="button" class="tick${i === SUBJECT.current ? " is-now" : ""}" data-i="${i}">${label(r)}${i === SUBJECT.current ? `<em>${c.now}</em>` : ""}</button>`)
+          .join("");
+        $("now-mark").style.setProperty("--now", `${xFromT(SUBJECT.current / last)}%`);
+        $("tl-body").innerHTML = [...SUBJECT.timeline]
+          .sort((a, b) => String(b.date).localeCompare(String(a.date)))
+          .map((row) => `<article class="tl-row${row.now ? " is-now" : ""}">
+            <time>${row.date}</time>
+            <span class="tl-band">${label(SUBJECT.ranks[row.rank])}${row.now ? `<em class="tl-now">${c.now}</em>` : ""}</span>
+            <p class="tl-why">${loc(row.whyZh, row.whyEn)}</p>
+            <p class="tl-src">${loc(row.srcZh, row.srcEn)}</p>
+          </article>`)
+          .join("");
+        $("scale").onclick = (e) => {
+          const btn = e.target.closest(".tick");
+          if (btn) setT(Number(btn.dataset.i) / last, true);
+        };
+        setT(t, true);
+      }
+
+      function setT(next, snap = false) {
+        t = Math.min(1, Math.max(0, next));
+        if (snap) t = Math.round(t * last) / last;
+        const i = Math.round(t * last);
+        const rank = SUBJECT.ranks[i];
+        const img = src(rank);
+        $("face").src = img;
+        $("thumb-a").src = img;
+        $("face").alt = label(rank);
+        $("thumb").style.setProperty("--x", `${xFromT(t)}%`);
+        $("fill").style.setProperty("--t", String(xFromT(t) / 100));
+        $("intensity").textContent = String(Math.round(t * 30)).padStart(2, "0");
+        $("rank-name").textContent = label(rank);
+        $("rank-sub").textContent = loc(rank.eventZh, rank.eventEn);
+        $("rank-stage").textContent = `${String(i + 1).padStart(2, "0")} / ${String(SUBJECT.ranks.length).padStart(2, "0")}`;
+        $("vibe").textContent = COPY[lang].vibe(label(SUBJECT.ranks[SUBJECT.current]));
+        document.body.dataset.rank = String(i);
+        document.querySelectorAll(".tick").forEach((el, n) => el.classList.toggle("is-active", n === i));
+        document.querySelectorAll("#ticks i").forEach((el, n) => el.classList.toggle("is-active", n === i));
+      }
+
+      function tFromX(clientX) {
+        const box = $("rail").getBoundingClientRect();
+        const f = (clientX - box.left) / box.width;
+        return (f * units() - 0.5) / last;
+      }
+
+      $("lang-btn").onclick = () => {
+        lang = lang === "zh" ? "en" : "zh";
+        render();
+      };
+      $("cue").onclick = () => $("chronicle").scrollIntoView({ behavior: "smooth" });
+      $("slider").onpointerdown = (e) => {
+        dragging = true;
+        $("slider").setPointerCapture?.(e.pointerId);
+        setT(tFromX(e.clientX));
+      };
+      window.onpointermove = (e) => {
+        if (dragging) setT(tFromX(e.clientX));
+      };
+      window.onpointerup = () => {
+        if (!dragging) return;
+        dragging = false;
+        setT(t, true);
+      };
+      window.onkeydown = (e) => {
+        if (e.key === "ArrowRight") setT(t + 1 / last, true);
+        if (e.key === "ArrowLeft") setT(t - 1 / last, true);
+      };
+
+      render();
+    </script>
+  </body>
+</html>

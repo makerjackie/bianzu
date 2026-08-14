@@ -28,7 +28,7 @@ const COPY = {
     dossier: "档案",
     cols: ["时间", "风评", "发生了什么", "依据"],
     docTitle: "滑动变祖器 · Sliding Ancestor Rheostat",
-    docDesc: "滑动变祖器：给马斯克、梁文锋、杨植麟、奥特曼、达里奥、Tibo 滑动封神。",
+    docDesc: "滑动变祖器：给马斯克、梁文锋、杨植麟、奥特曼、达里奥、Tibo、MakerJackie 滑动封神。",
     kicker: "变阻器 → 变祖器",
     brand: '滑动变<span class="zu">祖</span>器',
     brandSub: "Sliding Ancestor Rheostat",
@@ -52,7 +52,7 @@ const COPY = {
     dossier: "Dossier",
     cols: ["When", "Vibe", "What happened", "Source"],
     docTitle: "Sliding Ancestor Rheostat · 滑动变祖器",
-    docDesc: "Sliding Ancestor Rheostat: slide Musk, Liang, Yang, Altman, Dario, and Tibo into ancestorhood.",
+    docDesc: "Sliding Ancestor Rheostat: slide Musk, Liang, Yang, Altman, Dario, Tibo, and MakerJackie into ancestorhood.",
     kicker: "Rheostat → Ancestorstat",
     brand: 'Sliding Ancestor <span class="zu">Rheostat</span>',
     brandSub: "滑动变祖器",
@@ -212,6 +212,16 @@ function renderRoster() {
   els.roster.querySelectorAll(".who").forEach((btn) => {
     btn.addEventListener("click", () => setSubject(btn.dataset.id));
   });
+  revealActiveWho();
+}
+
+function revealActiveWho() {
+  const btn = els.roster.querySelector(".who.is-active");
+  if (!btn) return;
+  const rail = els.roster;
+  const box = rail.getBoundingClientRect();
+  const item = btn.getBoundingClientRect();
+  rail.scrollLeft += item.left + item.width / 2 - (box.left + box.width / 2);
 }
 
 function renderScale() {
@@ -377,7 +387,7 @@ function poke(id, volume = 1) {
   }
   let clip = banks[id];
   if (!clip) {
-    clip = new Audio(`/sfx/${id}.mp3?v=5`);
+    clip = new Audio(`/sfx/${id}.mp3?v=7`);
     banks[id] = clip;
   }
   if (isVoice) voice = clip;
