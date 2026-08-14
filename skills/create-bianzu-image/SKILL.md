@@ -39,34 +39,35 @@ Display name on the roster ≠ stem. Example: roster `MakerJackie`, ranks `小�
 
 This is **二创**：edit the user's photograph. It is not "draw someone who looks like them."
 
-Wrong: invent a frontal handsome lock, then style that lock. The lock is already a stranger.
-Right: square-crop the upload with code (`magick`), then `image_edit` **that file** for every rank.
+Wrong: invent a handsome stranger, then dress him.
+Wrong: freeze the upload's expression and head angle on all 6 ranks.
+Right: square-crop the upload with code (`magick`), then `image_edit` **that file** for every rank. Identity stays. Pose, expression, and head turn **must change**.
 
 Rules:
 
 1. Grok: `image_edit` the upload. Never `image_gen`. Same for other hosts: image-to-image only.
-2. Square with **code**, not the model. Do not ask the model to "reconstruct a frontal portrait" from a 3/4 selfie — that redraws the face.
-3. Keep their real head angle if turning them frontal would invent a new face.
-4. Prompt only what changes: clothes, background, body state. Say `Do not redraw the face, glasses, or hair. Keep this exact photograph.`
-5. No "more handsome / generic oil portrait / new identity lock." Light grade is fine. A different person is a fail.
+2. Square with **code**, not the model.
+3. Likeness = bone structure, glasses, hairline, nose, mouth. Not the same snapshot.
+4. Each rank gets a **new** head direction and expression. Chin down, look at camera, look up, 3/4 left, 3/4 right — mix them. Six ranks with the same side-glance = fail.
+5. No "more handsome generic oil portrait." A different person is a fail.
 6. Every rank's source is the **cropped user photo**, not a previous generated rank (except a one-step retry of that same rank).
 
-小难/牢可以惨，惨的是皮肤和肩膀，五官还是这张照片。
+小难/牢可以惨。惨的是表情和气色，还是这个人。
 
 ## Visual contract
 
-Shared: square 1:1, chest-up, face centered, same identity, no text/logos.
+Shared: square 1:1, chest-up, same identity, no text/logos.
 
-| i | body | face | clothes | backdrop |
+| i | body | head / expression | clothes | backdrop |
 | --- | --- | --- | --- | --- |
-| 0 | 瘦小、缩肩 | 灰黄、黑眼圈、可怜 | 肥大洗旧连帽衫 | 雨夜湿沥青、灯箱 |
-| 1 | 更瘦 | 更差、油光、呆滞 | 橙红囚衣 | 牢房铁栏 |
-| 2 | 正常 | 日常、微美颜本尊 | 休闲衬衫 | 出租屋/咖啡馆 |
-| 3 | 稍壮 | 气色好、沉静 | 黑唐装、红盘扣、金晕 | 暗金底 |
-| 4 | 明显更壮 | 凌厉自信 | 黑金龙纹袍（合身立领） | 雷云金电 |
-| 5 | 最壮、帝王肩 | 冷威 | 冕旒 + 黑金龙袍 | 金龙圆盘 |
+| 0 | 瘦小、缩肩 | 低头、视线下垂、可怜疲惫 | 肥大洗旧连帽衫 | 雨夜湿沥青、灯箱 |
+| 1 | 更瘦 | 略仰头看灯、呆滞、油光 | 橙红囚衣 | 牢房铁栏 |
+| 2 | 正常 | 微侧或对镜、浅笑、日常 | 休闲衬衫 | 出租屋/咖啡馆 |
+| 3 | 稍壮 | 正面平视、沉静 | 黑唐装、红盘扣、金晕 | 暗金底 |
+| 4 | 明显更壮 | 微扬下巴、凌厉自信 | 黑金龙纹袍（合身立领） | 雷云金电 |
+| 5 | 最壮、帝王肩 | 正面俯视观者、冷威 | 冕旒 + 黑金龙袍 | 金龙圆盘 |
 
-Each prompt: 2–5 sentences. Lead with `Do not redraw this face — keep the exact photograph.` Then only clothes / backdrop / body state.
+Each prompt: 2–5 sentences. Lead with `Same person as this photo — same glasses, bone structure, hair.` Then the new head turn, new expression, then clothes and backdrop.
 
 ## Generate
 
